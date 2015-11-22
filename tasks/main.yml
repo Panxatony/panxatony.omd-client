@@ -1,0 +1,45 @@
+---
+# tasks file for panxatony.omd-client
+
+- name: be sure xinetd is installed
+  yum: name=xinetd state=installed
+
+- name: enable xinetd
+  service: name=xinetd enabled=yes
+
+- name: copy add_to_check_mk.sh script to omd omd_server
+  copy: src={{ omd_client_rpm }} dest={{ omd_rpm_tmp_folder }}/{{ omd_client_rpm }} mode=0644 
+
+- name: install check_mk rpm package
+  yum: name={{ omd_rpm_tmp_folder }}/{{ omd_client_rpm }} state=present
+  notify:
+    - restart xinetd
+
+- name: Make sure basic ports are opened in the firewall
+  firewalld: port="{{ item }}" permanent=true state=enabled
+  with_items: omd_firewall_allow_ports
+  when: omd_firewall_allow_ports is defined
+  when: omd_activate_firewall == true
+  notify:
+    - restart firewalld
+
+#- name: check add_ client script on omd instance
+#  stat: path={{ omd_add_client_script_path }}/add_to_check_mk.sh
+#  register: file_exists
+#  delegate_to: "{{ item }}"
+#  with_items:
+#    - "{{ omd_server }}"
+
+- name: copy add_to_check_mk.sh script to omd omd_server
+  copy: src=add_to_check_mk.sh dest=/usr/local/bin/add_to_check_mk.sh mode=0755 
+  delegate_to: "{{ item }}"
+  with_items:
+    - "{{ omd_server }}"
+
+- name: add client to omd
+  command: /usr/local/bin/add_to_check_mk.sh -s {{ omd_site }} -h {{ omd_clientname }} -f {{ omd_client_folder }}
+  delegate_to: "{{ item }}"
+  with_items:
+    - "{{ omd_server }}"
+
+

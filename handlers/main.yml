@@ -1,0 +1,12 @@
+---
+# handlers file for panxatony.omd-client
+
+- name: restart xinetd
+  service: 
+    name: xinetd
+    state: restarted
+
+- name: restart firewalld
+  service:
+    name: firewalld
+    state: restarted

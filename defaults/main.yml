@@ -1,0 +1,16 @@
+---
+# defaults file for panxatony.omd-client
+
+#general settings 
+omd_site: cs9lab	
+omd_server: 192.168.71.136
+omd_client_rpm: check-mk-agent-1.2.6p12-1.noarch.rpm
+omd_rpm_tmp_folder: /tmp
+
+#client specific settings
+omd_client_folder: unspecified
+omd_clientname: icmucv72
+#omd_client_tags: 
+omd_firewall_allow_ports:
+  - 6556/tcp
+omd_activate_firewall: true
