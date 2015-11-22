@@ -23,6 +23,12 @@
   notify:
     - restart firewalld
 
+- name: restart services
+  service: name="{{ item }}" state=restarted
+  with_items:
+    - xinetd
+    - firewalld
+
 #- name: check add_ client script on omd instance
 #  stat: path={{ omd_add_client_script_path }}/add_to_check_mk.sh
 #  register: file_exists
