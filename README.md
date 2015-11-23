@@ -11,12 +11,12 @@ OMD Server must be installed and defined in playbook or defaults/main.yml
 Role Variables
 --------------
 
-```omd_site - Name of OMD instance
-omd_server: IP or FQDN of OMD instance
-omd_client_folder: Wato Folder which shall be used for client
-omd_clientname: Name of system used in OMD
-omd_client_tags: Host Tags
-```
+    omd_site - Name of OMD instance
+    omd_server: IP or FQDN of OMD instance
+    omd_client_folder: Wato Folder which shall be used for client
+    omd_clientname: Name of system used in OMD
+    omd_client_tags: Host Tags
+
 
 Dependencies
 ------------
