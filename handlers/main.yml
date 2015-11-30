@@ -5,8 +5,12 @@
   service: 
     name: xinetd
     state: restarted
+  become: yes
+  become_user: root
 
 - name: restart firewalld
   service:
     name: firewalld
     state: restarted
+  become: yes
+  become_user: root
