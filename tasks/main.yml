@@ -15,15 +15,8 @@
   tags:
     - omd-client
 
-- name: copy add_to_check_mk.sh script to omd omd_server
-  copy: src={{ omd_client_rpm }} dest={{ omd_rpm_tmp_folder }}/{{ omd_client_rpm }} mode=0644 
-  become: yes
-  become_user: root
-  tags:
-    - omd-client
-
 - name: install check_mk rpm package
-  yum: name={{ omd_rpm_tmp_folder }}/{{ omd_client_rpm }} state=present
+  yum: name={{ omdistro_rpm_tmp_folder }}/{{ omdistro_client_rpm }} state=present
   notify:
     - restart xinetd
   become: yes
@@ -53,31 +46,36 @@
   tags:
     - omd-client
 
-#- name: check add_ client script on omd instance
-#  stat: path={{ omd_add_client_script_path }}/add_to_check_mk.sh
-#  register: file_exists
-#  delegate_to: "{{ item }}"
-#  with_items:
-#    - "{{ omd_server }}"
-
-- name: copy add_to_check_mk.sh script to omd omd_server
-  copy: src=add_to_check_mk.sh dest=/usr/local/bin/add_to_check_mk.sh mode=0755 
+- name: Check if add_to_check_mk is already copied to {{ omdistro_server }}.
   delegate_to: "{{ item }}"
   with_items:
-    - "{{ omd_server }}"
+    - "{{ omdistro_server }}"
+  stat: path=/usr/local/bin/add_to_check_mk.sh
+  register: omd_check_mk_file
+  become: yes
+  become_user: root
+  tags:
+    - omd-client
+
+- name: copy add_to_check_mk.sh script to omd {{ omdistro_server }}
+  copy: src=add_to_check_mk.sh dest=/usr/local/bin/add_to_check_mk.sh mode=0755 
+  #when: (omd_check_mk_file.stat.exists == false)
+  become: yes
+  delegate_to: "{{ item }}"
+  with_items:
+    - "{{ omdistro_server }}"
   become: yes
   become_user: root
   tags:
     - omd-client
 
 - name: add client to omd
-  command: /usr/local/bin/add_to_check_mk.sh -s {{ omd_site }} -h {{ omd_clientname }} -f {{ omd_client_folder }}
+  #command: /usr/local/bin/add_to_check_mk.sh -s {{ omdistro_site }} -h {{ ansible_nodename }} -f {{ omd_client_folder }}
+  command: /usr/local/bin/add_to_check_mk.sh -s {{ omdistro_site }} -h {{ ansible_nodename }}
   delegate_to: "{{ item }}"
   with_items:
-    - "{{ omd_server }}"
+    - "{{ omdistro_server }}"
   become: yes
   become_user: root
   tags:
     - omd-client
-
-
