@@ -16,7 +16,7 @@
     - omd-client
 
 - name: copy check_mk rpm 
-  copy: src={{ omd_client_rpm }} dest={{ omd_rpm_tmp_folder }}/{{ omd_client_rpm }} mode=0644 
+  copy: src={{ omdistro_client_rpm }} dest={{ omdistro_rpm_tmp_folder }}/{{ omdistro_client_rpm }} mode=0644 
   become: yes
   become_user: root
   tags:
