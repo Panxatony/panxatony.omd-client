@@ -53,6 +53,14 @@
   tags:
     - omd-client
 
+
+- name: create wato file
+  file: path=/opt/omd/sites/{{ omdistro_site }}/etc/check_mk/conf.d/wato/hosts.mk owner={{ omdistro_site }} group={{ omdistro_site }} mode=0644
+  become: yes
+  become_user: root
+  tags:
+    - omd-client
+
 - name: Check if add_to_check_mk is already copied to {{ omdistro_server }}.
   delegate_to: "{{ item }}"
   with_items:
